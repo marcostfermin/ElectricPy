@@ -422,9 +422,9 @@
         <span class="n">num</span> <span class="o">=</span> <span class="n">system</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">den</span> <span class="o">=</span> <span class="n">system</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="c1"># Convolve numerator or denominator as needed</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">num</span><span class="p">))</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">:</span>
             <span class="n">num</span> <span class="o">=</span> <span class="n">convolve</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>  <span class="c1"># Convolve terms in numerator</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">den</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">den</span><span class="p">))</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">:</span>
             <span class="n">den</span> <span class="o">=</span> <span class="n">convolve</span><span class="p">(</span><span class="n">den</span><span class="p">)</span>  <span class="c1"># Convolve terms in denominator</span>
         <span class="k">if</span> <span class="n">feedback</span><span class="p">:</span>  <span class="c1"># If asked to add the numerator to the denominator</span>
             <span class="n">ld</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">den</span><span class="p">)</span>  <span class="c1"># Length of denominator</span>
@@ -501,21 +501,11 @@
 
     <span class="c1"># Condition min and max freq terms</span>
     <span class="n">degrees</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="c1"># Backwards-compatible: historically &quot;deg&quot; here behaved like &quot;Hz&quot;</span>
-    <span class="k">if</span> <span class="n">freqaxis</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;hz&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">freqaxis</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">freqaxis</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>  <span class="c1"># degrees requested</span>
         <span class="n">degrees</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="c1"># Scale Hz to rad/sec for calculation</span>
+        <span class="c1"># Scale Degrees to Radians for calculation</span>
         <span class="n">mn</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">mn</span>
         <span class="n">mx</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">mx</span>
-
-    <span class="c1"># Prevent invalid log10 values</span>
-    <span class="k">if</span> <span class="n">mn</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">mn</span> <span class="o">=</span> <span class="mf">1e-12</span>
-    <span class="k">if</span> <span class="n">mx</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">mx</span> <span class="o">=</span> <span class="mf">1e-12</span>
-    <span class="k">if</span> <span class="n">mx</span> <span class="o">&lt;=</span> <span class="n">mn</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;mx must be greater than mn&quot;</span><span class="p">)</span>
-
     <span class="n">mn</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">mn</span><span class="p">)</span>  <span class="c1"># find the _exponent value</span>
     <span class="n">mx</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">mx</span><span class="p">)</span>  <span class="c1"># find the _exponent value</span>
 
@@ -525,14 +515,14 @@
     <span class="c1"># Calculate the bode system</span>
     <span class="n">w</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">ang</span> <span class="o">=</span> <span class="n">_sig</span><span class="o">.</span><span class="n">bode</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">wover</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_plot</span><span class="p">(</span><span class="n">plot_title</span><span class="p">,</span> <span class="n">y_label</span><span class="p">,</span> <span class="n">ydata</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_plot</span><span class="p">(</span><span class="n">plot_title</span><span class="p">,</span> <span class="n">y_label</span><span class="p">):</span>
         <span class="n">_plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">plot_title</span><span class="p">)</span>
         <span class="n">_plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">y_label</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">degrees</span><span class="p">:</span>  <span class="c1"># Plot in Hz</span>
-            <span class="n">_plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">w</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span> <span class="n">ydata</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">degrees</span><span class="p">:</span>  <span class="c1"># Plot in degrees</span>
+            <span class="n">_plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">w</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span> <span class="n">ang</span><span class="p">)</span>
             <span class="n">_plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Frequency (Hz)&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># Plot in radians</span>
-            <span class="n">_plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">ydata</span><span class="p">)</span>
+            <span class="n">_plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">ang</span><span class="p">)</span>
             <span class="n">_plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Frequency (rad/sec)&quot;</span><span class="p">)</span>
         <span class="n">_plt</span><span class="o">.</span><span class="n">xscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
         <span class="n">_plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span>
@@ -541,12 +531,12 @@
         <span class="k">if</span> <span class="n">ylim</span><span class="p">:</span>
             <span class="n">_plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">ylim</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sv</span><span class="p">:</span>
-            <span class="n">_plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">plot_title</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span><span class="p">)</span>
+            <span class="n">_plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">title</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span><span class="p">)</span>
 
     <span class="c1"># Plot Magnitude</span>
     <span class="k">if</span> <span class="n">magnitude</span><span class="p">:</span>
         <span class="n">magTitle</span> <span class="o">=</span> <span class="s2">&quot;Magnitude &quot;</span> <span class="o">+</span> <span class="n">title</span>
-        <span class="n">_plot</span><span class="p">(</span><span class="n">magTitle</span><span class="p">,</span> <span class="s2">&quot;Magnitude (DB)&quot;</span><span class="p">,</span> <span class="n">mag</span><span class="p">)</span>
+        <span class="n">_plot</span><span class="p">(</span><span class="n">magTitle</span><span class="p">,</span> <span class="s2">&quot;Magnitude (DB)&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">disp3db</span><span class="p">:</span>
             <span class="n">_plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">lowcut</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -556,7 +546,7 @@
     <span class="c1"># Plot Angle</span>
     <span class="k">if</span> <span class="n">angle</span><span class="p">:</span>
         <span class="n">angTitle</span> <span class="o">=</span> <span class="s2">&quot;Angle &quot;</span> <span class="o">+</span> <span class="n">title</span>
-        <span class="n">_plot</span><span class="p">(</span><span class="n">angTitle</span><span class="p">,</span> <span class="s2">&quot;Angle (degrees)&quot;</span><span class="p">,</span> <span class="n">ang</span><span class="p">)</span>
+        <span class="n">_plot</span><span class="p">(</span><span class="n">angTitle</span><span class="p">,</span> <span class="s2">&quot;Angle (degrees)&quot;</span><span class="p">)</span>
         <span class="n">_plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
@@ -615,14 +605,8 @@
 <span class="sd">    angle:          bool, optional</span>
 <span class="sd">                    Control argument to enable plotting of angle, default=True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Avoid log(0) on semilog plots</span>
-    <span class="k">if</span> <span class="n">mn</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">mn_plot</span> <span class="o">=</span> <span class="mf">1e-12</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">mn_plot</span> <span class="o">=</span> <span class="n">mn</span>
-
-    <span class="n">W</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">mn_plot</span><span class="p">,</span> <span class="n">mx</span><span class="p">,</span> <span class="n">NN</span><span class="p">)</span>
-    <span class="n">H</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">NN</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+    <span class="n">W</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">mn</span><span class="p">,</span> <span class="n">mx</span><span class="p">,</span> <span class="n">NN</span><span class="p">)</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">NN</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">NN</span><span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">W</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
@@ -702,15 +686,9 @@
 <span class="sd">    angle:          bool, optional</span>
 <span class="sd">                    Control argument to enable plotting of angle, default=True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Avoid log(0) on semilog plots</span>
-    <span class="k">if</span> <span class="n">mn</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">mn_plot</span> <span class="o">=</span> <span class="mf">1e-12</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">mn_plot</span> <span class="o">=</span> <span class="n">mn</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">mn</span><span class="p">,</span> <span class="n">mx</span><span class="p">,</span> <span class="n">NN</span><span class="p">)</span>
 
-    <span class="n">phi</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">mn_plot</span><span class="p">,</span> <span class="n">mx</span><span class="p">,</span> <span class="n">NN</span><span class="p">)</span>
-
-    <span class="n">H</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">NN</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">NN</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">NN</span><span class="p">):</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">_exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">phi</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">approx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span> <span class="ow">and</span> <span class="nb">callable</span><span class="p">(</span><span class="n">approx</span><span class="p">):</span>
@@ -718,7 +696,7 @@
             <span class="n">s</span> <span class="o">=</span> <span class="n">approx</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>  <span class="c1"># Pass current z-value and dt</span>
             <span class="n">H</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># Z-Domain Transfer Function Provided</span>
-            <span class="n">H</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+            <span class="n">H</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">f</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">magnitude</span><span class="p">:</span>
         <span class="n">_plt</span><span class="o">.</span><span class="n">semilogx</span><span class="p">((</span><span class="mi">180</span> <span class="o">/</span> <span class="n">_pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">phi</span><span class="p">,</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">H</span><span class="p">)),</span> <span class="s1">&#39;k&#39;</span><span class="p">)</span>

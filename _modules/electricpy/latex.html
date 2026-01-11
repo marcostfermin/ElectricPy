@@ -418,6 +418,82 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_np</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_complex_scalar</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">complex</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">complexfloating</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_fmt_number</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ndigits</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Format real/complex numbers for LaTeX without adding dollar signs.</span>
+<span class="sd">    Keeps output compact and avoids &#39;+-&#39; artifacts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">_is_complex_scalar</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">xr</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">xi</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">xr_r</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">xr</span><span class="p">,</span> <span class="n">ndigits</span><span class="p">)</span>
+        <span class="n">xi_r</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">ndigits</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">xi_r</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">ndigits</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))):</span>
+            <span class="c1"># Pure real</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">xr_r</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">xr_r</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">ndigits</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))):</span>
+            <span class="c1"># Pure imaginary</span>
+            <span class="k">if</span> <span class="n">xi_r</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="sa">r</span><span class="s1">&#39;\mathrm</span><span class="si">{j}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">xi_r</span><span class="p">))</span>
+            <span class="k">return</span> <span class="sa">r</span><span class="s1">&#39;-\mathrm</span><span class="si">{j}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">xi_r</span><span class="p">))</span>
+
+        <span class="c1"># Full complex</span>
+        <span class="k">if</span> <span class="n">xi_r</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">xr_r</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;+\mathrm</span><span class="si">{j}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">xi_r</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">xr_r</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;-\mathrm</span><span class="si">{j}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">xi_r</span><span class="p">))</span>
+
+    <span class="c1"># Real numeric</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">xr</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">xr_r</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">xr</span><span class="p">,</span> <span class="n">ndigits</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">xr_r</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_fmt_poly_term</span><span class="p">(</span><span class="n">coeff</span><span class="p">,</span> <span class="n">power</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="n">ndigits</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Format a single polynomial term (no sign), e.g. &quot;3s^{2}&quot;, &quot;s&quot;, &quot;5&quot;.</span>
+<span class="sd">    coeff is assumed positive magnitude here.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Decide if coefficient should be shown</span>
+    <span class="n">show_coeff</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">power</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">_is_complex_scalar</span><span class="p">(</span><span class="n">coeff</span><span class="p">):</span>
+            <span class="c1"># If complex, always show it (wrapped)</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">coeff</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">ndigits</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))):</span>
+                    <span class="n">show_coeff</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+    <span class="n">coeff_str</span> <span class="o">=</span> <span class="n">_fmt_number</span><span class="p">(</span><span class="n">coeff</span><span class="p">,</span> <span class="n">ndigits</span><span class="p">)</span>
+
+    <span class="c1"># Wrap complex coefficients for readability when multiplied by variable</span>
+    <span class="k">if</span> <span class="n">_is_complex_scalar</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span> <span class="ow">and</span> <span class="n">power</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">coeff_str</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\left(&#39;</span> <span class="o">+</span> <span class="n">coeff_str</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;\right)&#39;</span>
+
+    <span class="k">if</span> <span class="n">power</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">coeff_str</span>
+
+    <span class="k">if</span> <span class="n">power</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">show_coeff</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">coeff_str</span> <span class="o">+</span> <span class="n">var</span>
+        <span class="k">return</span> <span class="n">var</span>
+
+    <span class="k">if</span> <span class="n">show_coeff</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">coeff_str</span> <span class="o">+</span> <span class="n">var</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;^{&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">power</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;}&#39;</span>
+    <span class="k">return</span> <span class="n">var</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;^{&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">power</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;}&#39;</span>
+
+
 <span class="c1"># Define Complex LaTeX Generator</span>
 <div class="viewcode-block" id="clatex">
 <a class="viewcode-back" href="../../api/electricpy.latex.clatex.html#electricpy.latex.clatex">[docs]</a>
@@ -429,34 +505,6 @@
 <span class="sd">    Function to generate a LaTeX string of complex value(s)</span>
 <span class="sd">    in either polar or rectangular form. May generate both dollar</span>
 <span class="sd">    signs.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    val:        complex</span>
-<span class="sd">                The complex value to be printed, if value</span>
-<span class="sd">                is a list or numpy array, the result will be</span>
-<span class="sd">                demonstrated as a matrix.</span>
-<span class="sd">    round:      int, optional</span>
-<span class="sd">                Control to specify number of decimal places</span>
-<span class="sd">                that should displayed. default=True</span>
-<span class="sd">    polar:      bool, optional</span>
-<span class="sd">                Control argument to force result into polar</span>
-<span class="sd">                coordinates instead of rectangular. default=True</span>
-<span class="sd">    predollar:  bool, optional</span>
-<span class="sd">                Control argument to enable/disable the dollar</span>
-<span class="sd">                sign before the string. default=True</span>
-<span class="sd">    postdollar: bool, optional</span>
-<span class="sd">                Control argument to enable/disable the dollar</span>
-<span class="sd">                sign after the string. default=True</span>
-<span class="sd">    double:     bool, optional</span>
-<span class="sd">                Control argument to specify whether or not</span>
-<span class="sd">                LaTeX dollar signs should be double or single,</span>
-<span class="sd">                default=False</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    latex:      str</span>
-<span class="sd">                LaTeX string for the complex value.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Define Interpretation Functions</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">polarstring</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">round</span><span class="p">):</span>
@@ -464,16 +512,16 @@
         <span class="n">ang</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">ang_r</span><span class="p">)</span>  <span class="c1"># Convert to degrees</span>
         <span class="n">mag</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">mag</span><span class="p">,</span> <span class="nb">round</span><span class="p">)</span>  <span class="c1"># Round</span>
         <span class="n">ang</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">ang</span><span class="p">,</span> <span class="nb">round</span><span class="p">)</span>  <span class="c1"># Round</span>
-        <span class="n">latex</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mag</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;∠&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ang</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;°&#39;</span>
+        <span class="n">latex</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mag</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;\angle&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ang</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;^{\circ}&#39;</span>
         <span class="k">return</span> <span class="n">latex</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">rectstring</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">round</span><span class="p">):</span>
-        <span class="n">real</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="nb">round</span><span class="p">)</span>  <span class="c1"># Round</span>
-        <span class="n">imag</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="nb">round</span><span class="p">)</span>  <span class="c1"># Round</span>
+        <span class="n">real</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">val</span><span class="p">),</span> <span class="nb">round</span><span class="p">)</span>  <span class="c1"># Round</span>
+        <span class="n">imag</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">val</span><span class="p">),</span> <span class="nb">round</span><span class="p">)</span>  <span class="c1"># Round</span>
         <span class="k">if</span> <span class="n">imag</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">latex</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">real</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;+j&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">imag</span><span class="p">)</span>
+            <span class="n">latex</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">real</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;+\mathrm</span><span class="si">{j}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">imag</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">latex</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">real</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;-j&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">imag</span><span class="p">))</span>
+            <span class="n">latex</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">real</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;-\mathrm</span><span class="si">{j}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">imag</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">latex</span>
 
     <span class="c1"># Interpret as numpy array if simple list</span>
@@ -511,7 +559,7 @@
                     <span class="n">latex</span> <span class="o">+=</span> <span class="n">rectstring</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">ri</span><span class="p">],</span> <span class="nb">round</span><span class="p">)</span>
         <span class="c1"># Close Matrix</span>
         <span class="n">latex</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;\end</span><span class="si">{bmatrix}</span><span class="s1">&#39;</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">complex</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">_is_complex_scalar</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
         <span class="c1"># Treat as Polar When Directed</span>
         <span class="k">if</span> <span class="n">polar</span><span class="p">:</span>
             <span class="n">latex</span> <span class="o">=</span> <span class="n">polarstring</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">round</span><span class="p">)</span>
@@ -543,43 +591,6 @@
 <span class="sd">    LaTeX string generating function to create a transfer</span>
 <span class="sd">    function string in LaTeX. Particularly useful for</span>
 <span class="sd">    demonstrating systems in Interactive Python Notebooks.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    sys:        list</span>
-<span class="sd">                If provided in conjunction with optional</span>
-<span class="sd">                parameter `sysp`, the parameter `sys` will</span>
-<span class="sd">                act as the numerator set. Otherwise, can be</span>
-<span class="sd">                passed as a list containing two sublists,</span>
-<span class="sd">                the first being the numerator set, and the</span>
-<span class="sd">                second being the denominator set.</span>
-<span class="sd">    sysp:       list, optional</span>
-<span class="sd">                If provided, this input will act as the</span>
-<span class="sd">                denominator of the transfer function.</span>
-<span class="sd">    var:        str, optional</span>
-<span class="sd">                The variable that should be printed for each</span>
-<span class="sd">                term (i.e. &#39;s&#39; or &#39;j\omega&#39;). default=&#39;s&#39;</span>
-<span class="sd">    predollar:  bool, optional</span>
-<span class="sd">                Control argument to enable/disable the dollar</span>
-<span class="sd">                sign before the string. default=True</span>
-<span class="sd">    postdollar: bool, optional</span>
-<span class="sd">                Control argument to enable/disable the dollar</span>
-<span class="sd">                sign after the string. default=True</span>
-<span class="sd">    double:     bool, optional</span>
-<span class="sd">                Control argument to specify whether or not</span>
-<span class="sd">                LaTeX dollar signs should be double or single,</span>
-<span class="sd">                default=False</span>
-<span class="sd">    tolerance:  float, optional</span>
-<span class="sd">                The floating point tolerance cutoff to evaluate</span>
-<span class="sd">                each term against. If the absolute value of the</span>
-<span class="sd">                particular term is greater than the tolerance,</span>
-<span class="sd">                the value will be printed, if not, it will not</span>
-<span class="sd">                be printed. default=1e-8</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    latex:      str</span>
-<span class="sd">                LaTeX string for the transfer function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Collect Numerator and Denominator Terms</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sysp</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
@@ -590,24 +601,53 @@
 
     <span class="c1"># Generate String Function</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">genstring</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
         <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-        <span class="n">strg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">terms</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
-            <span class="c1"># Add Each Term to String</span>
             <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tolerance</span><span class="p">:</span>
-                <span class="c1"># Add &#39;+&#39; Symbol After Each Term</span>
-                <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">strg</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;+&#39;</span>
-                <span class="n">strg</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-                <span class="c1"># Determine Exponent</span>
-                <span class="n">xpnt</span> <span class="o">=</span> <span class="n">length</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
-                <span class="k">if</span> <span class="n">xpnt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">strg</span> <span class="o">+=</span> <span class="n">var</span>
-                <span class="k">elif</span> <span class="n">xpnt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="k">pass</span>  <span class="c1"># Don&#39;t Do Anything</span>
+                <span class="n">power</span> <span class="o">=</span> <span class="n">length</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+
+                <span class="c1"># Determine sign and magnitude</span>
+                <span class="n">sign</span> <span class="o">=</span> <span class="s1">&#39;+&#39;</span>
+                <span class="n">v_mag</span> <span class="o">=</span> <span class="n">v</span>
+                <span class="k">if</span> <span class="n">_is_complex_scalar</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+                    <span class="c1"># Use real part for sign only when imag ~ 0, otherwise keep as-is (no sign extraction)</span>
+                    <span class="n">vr</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                    <span class="n">vi</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">vi</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">tolerance</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">vr</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+                        <span class="n">sign</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+                        <span class="n">v_mag</span> <span class="o">=</span> <span class="o">-</span><span class="n">v</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># complex (or imag not ~0): do not force sign splitting; treat as one coefficient</span>
+                        <span class="n">sign</span> <span class="o">=</span> <span class="s1">&#39;+&#39;</span>
+                        <span class="n">v_mag</span> <span class="o">=</span> <span class="n">v</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">strg</span> <span class="o">+=</span> <span class="n">var</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;^{&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">xpnt</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;}&#39;</span>
-        <span class="k">return</span> <span class="n">strg</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">sign</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+                            <span class="n">v_mag</span> <span class="o">=</span> <span class="o">-</span><span class="n">v</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="n">sign</span> <span class="o">=</span> <span class="s1">&#39;+&#39;</span>
+                        <span class="n">v_mag</span> <span class="o">=</span> <span class="n">v</span>
+
+                <span class="n">term</span> <span class="o">=</span> <span class="n">_fmt_poly_term</span><span class="p">(</span><span class="n">v_mag</span><span class="p">,</span> <span class="n">power</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="n">var</span><span class="p">,</span> <span class="n">ndigits</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+                <span class="n">terms</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">sign</span><span class="p">,</span> <span class="n">term</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">terms</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;0&#39;</span>
+
+        <span class="c1"># Build string with correct leading sign handling</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">sgn</span><span class="p">,</span> <span class="n">term</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">terms</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">sgn</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+                    <span class="n">out</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">term</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">out</span> <span class="o">+=</span> <span class="n">term</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">+=</span> <span class="p">(</span><span class="sa">r</span><span class="s1">&#39;+&#39;</span> <span class="k">if</span> <span class="n">sgn</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span> <span class="k">else</span> <span class="sa">r</span><span class="s1">&#39;-&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">term</span>
+        <span class="k">return</span> <span class="n">out</span>
 
     <span class="c1"># Generate Total TF String</span>
     <span class="n">latex</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\frac{&#39;</span> <span class="o">+</span> <span class="n">genstring</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;}{&#39;</span>
