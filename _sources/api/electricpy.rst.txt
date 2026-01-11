@@ -1,0 +1,162 @@
+﻿electricpy
+==========
+
+.. rubric:: Description
+
+.. automodule:: electricpy
+
+.. currentmodule:: electricpy
+
+
+
+
+
+
+
+
+.. rubric:: Functions
+
+.. autosummary::
+    :toctree: .
+    
+    acpiv
+    
+    bridge_impedance
+    
+    characterz
+    
+    cosfilt
+    
+    cprint
+    
+    curdiv
+    
+    de_calc
+    
+    dynetz
+    
+    fftplot
+    
+    fftsumplot
+    
+    funcfft
+    
+    geninternalv
+    
+    gmd
+    
+    harmonics
+    
+    hartleydata
+    
+    ic_555_astable
+    
+    ic_555_monostable
+    
+    induction_machine_slip
+    
+    instpower
+    
+    ipu
+    
+    iscrl
+    
+    led_resistor
+    
+    lm317
+    
+    machslip
+    
+    motorstartcap
+    
+    natfreq
+    
+    nlinpf
+    
+    non_linear_pf
+    
+    parallel_plate_capacitance
+    
+    peak
+    
+    pfcorrection
+    
+    phaseline
+    
+    phs3valpha
+    
+    pi_attenuator
+    
+    powerflow
+    
+    powerimpedance
+    
+    powerset
+    
+    primary
+    
+    propagation_constants
+    
+    puchgbase
+    
+    reactance
+    
+    rms
+    
+    rxrecompose
+    
+    sampfft
+    
+    secondary
+    
+    shannondata
+    
+    short_circuit_current
+    
+    sinfilt
+    
+    slew_rate
+    
+    solenoid_inductance
+    
+    suspension_insulators
+    
+    syncspeed
+    
+    t_attenuator
+    
+    tap_changing_transformer
+    
+    tcycle
+    
+    transposez
+    
+    unbalance
+    
+    vipf
+    
+    voltdiv
+    
+    vscdcbus
+    
+    vscgains
+    
+    wireresistance
+    
+    wrms
+    
+    zdecompose
+    
+    zener_diode_power
+    
+    zener_diode_required_resistor
+    
+    zperlength
+    
+    zpu
+    
+    zrecompose
+    
+    zsource
+    
+

@@ -1,0 +1,15 @@
+﻿electricpy.phasor
+=================
+
+.. rubric:: Description
+
+.. automodule:: electricpy.phasor
+
+.. currentmodule:: electricpy.phasor
+
+
+
+
+
+
+
