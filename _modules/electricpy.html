@@ -17,7 +17,7 @@
     
     
       
-        <title>electricpy - electricpy 0.4.0 documentation</title>
+        <title>electricpy - electricpy 0.5.0 documentation</title>
       
     
     
@@ -76,7 +76,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../index.html" title="electricpy 0.4.0 documentation" class="md-header__button md-logo" aria-label="electricpy 0.4.0 documentation" data-md-component="logo">
+    <a href="../index.html" title="electricpy 0.5.0 documentation" class="md-header__button md-logo" aria-label="electricpy 0.5.0 documentation" data-md-component="logo">
       <img src="../_static/ElectricpyLogo.svg" alt="logo">
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -87,7 +87,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            electricpy 0.4.0 documentation
+            electricpy 0.5.0 documentation
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -208,10 +208,10 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="electricpy 0.4.0 documentation" class="md-nav__button md-logo" aria-label="electricpy 0.4.0 documentation" data-md-component="logo">
+    <a href="../index.html" title="electricpy 0.5.0 documentation" class="md-nav__button md-logo" aria-label="electricpy 0.5.0 documentation" data-md-component="logo">
       <img src="../_static/ElectricpyLogo.svg" alt="logo">
     </a>
-    electricpy 0.4.0 documentation
+    electricpy 0.5.0 documentation
   </label>
   
     <div class="md-nav__source">
@@ -1122,23 +1122,19 @@
 
     <span class="c1"># Calculate Asymmetrical (total) Current if t is not None</span>
     <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># Calculate RMS if none of the angular values are provided</span>
-        <span class="k">if</span> <span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">omega</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Calculate tau</span>
-            <span class="n">tau</span> <span class="o">=</span> <span class="n">t</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">60</span><span class="p">)</span>
+        <span class="c1"># RMS asymmetry / factor calculation (does not require alpha)</span>
+        <span class="k">if</span> <span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># cycles elapsed at frequency f</span>
+            <span class="n">tau</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">f</span>
             <span class="n">K</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">tau</span> <span class="o">/</span> <span class="p">(</span><span class="n">X</span> <span class="o">/</span> <span class="n">R</span><span class="p">)))</span>
             <span class="n">IAC</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">V</span> <span class="o">/</span> <span class="n">Z</span><span class="p">)</span>
             <span class="n">Irms</span> <span class="o">=</span> <span class="n">K</span> <span class="o">*</span> <span class="n">IAC</span>
             <span class="c1"># Return Values</span>
             <span class="k">return</span> <span class="n">Irms</span><span class="p">,</span> <span class="n">IAC</span><span class="p">,</span> <span class="n">K</span>
-        <span class="k">elif</span> <span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">omega</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">omega</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ERROR: Inappropriate Arguments Provided.&quot;</span><span class="p">)</span>
         <span class="c1"># Calculate Instantaneous if all angular values provided</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Convert Degrees to Radians</span>
-            <span class="n">omega</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">omega</span><span class="p">)</span>
-            <span class="n">alpha</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
-            <span class="n">theta</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
             <span class="c1"># Calculate T</span>
             <span class="n">T</span> <span class="o">=</span> <span class="n">X</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f</span> <span class="o">*</span> <span class="n">R</span><span class="p">)</span>  <span class="c1"># seconds</span>
             <span class="c1"># Calculate iAC and iDC</span>
@@ -1568,30 +1564,40 @@
 <span class="sd">                Will be returned in ohmic (not per-unit) value if</span>
 <span class="sd">                *perunit* argument is specified as False.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Preserve original S and V for later back-conversion</span>
+    <span class="n">_S_in</span> <span class="o">=</span> <span class="n">S</span>
+    <span class="n">_V_in</span> <span class="o">=</span> <span class="n">V</span>
+
     <span class="c1"># Force Sbase and Vbase if needed</span>
     <span class="k">if</span> <span class="n">Vbase</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">Vbase</span> <span class="o">=</span> <span class="n">V</span>
     <span class="k">if</span> <span class="n">Sbase</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">Sbase</span> <span class="o">=</span> <span class="n">S</span>
+
     <span class="c1"># Prevent scaling if per-unit already applied</span>
-    <span class="k">if</span> <span class="n">Vbase</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">Vbase</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">Vbase</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">if</span> <span class="n">Sbase</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">Sbase</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">Sbase</span> <span class="o">=</span> <span class="mi">1</span>
+
     <span class="c1"># Set to per-unit</span>
     <span class="n">Spu</span> <span class="o">=</span> <span class="n">S</span> <span class="o">/</span> <span class="n">Sbase</span>
     <span class="n">Vpu</span> <span class="o">=</span> <span class="n">V</span> <span class="o">/</span> <span class="n">Vbase</span>
+
     <span class="c1"># Evaluate Zsource Magnitude</span>
-    <span class="n">Zsource_pu</span> <span class="o">=</span> <span class="n">Vpu</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">Spu</span>
+    <span class="n">Zmag_pu</span> <span class="o">=</span> <span class="n">Vpu</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">Spu</span>
+
     <span class="c1"># Evaluate the angle</span>
     <span class="n">nu</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">XoR</span><span class="p">))</span>
+
     <span class="c1"># Conditionally Evaluate Phasor Impedance</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
         <span class="n">Zsource_pu</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="n">nu</span><span class="p">:</span>
-            <span class="n">Zsource_pu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phasors</span><span class="p">(</span><span class="n">Zsource_pu</span><span class="p">,</span> <span class="n">angle</span><span class="p">))</span>
+            <span class="n">Zsource_pu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phasor</span><span class="p">(</span><span class="n">Zmag_pu</span><span class="p">,</span> <span class="n">angle</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">Zsource_pu</span> <span class="o">=</span> <span class="n">phasors</span><span class="p">(</span><span class="n">Zsource_pu</span><span class="p">,</span> <span class="n">nu</span><span class="p">)</span>
+        <span class="n">Zsource_pu</span> <span class="o">=</span> <span class="n">phasor</span><span class="p">(</span><span class="n">Zmag_pu</span><span class="p">,</span> <span class="n">nu</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">perunit</span><span class="p">:</span>
         <span class="n">Zsource</span> <span class="o">=</span> <span class="n">Zsource_pu</span> <span class="o">*</span> <span class="n">Vbase</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">Sbase</span>
         <span class="k">return</span> <span class="n">Zsource</span>
@@ -2219,17 +2225,22 @@
 <span class="sd">    Ea:         complex</span>
 <span class="sd">                The internal voltage of the generator.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># All Parameters Provided</span>
-    <span class="k">if</span> <span class="n">Zmp</span> <span class="o">==</span> <span class="n">Zmpp</span> <span class="o">==</span> <span class="n">Ip</span> <span class="o">==</span> <span class="n">Ipp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">Vgn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">Vgn</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">Vgn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">Vgn</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># Two-mutual model</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">Zmp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">Zmpp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">Ip</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">Ipp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">Zmp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">Zmpp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">Ip</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">Ipp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid Parameter Set&quot;</span><span class="p">)</span>
         <span class="n">Ea</span> <span class="o">=</span> <span class="n">Zs</span> <span class="o">*</span> <span class="n">I</span> <span class="o">+</span> <span class="n">Zmp</span> <span class="o">*</span> <span class="n">Ip</span> <span class="o">+</span> <span class="n">Zmpp</span> <span class="o">*</span> <span class="n">Ipp</span> <span class="o">+</span> <span class="n">Vt</span> <span class="o">+</span> <span class="n">Vgn</span>
-    <span class="c1"># Select Parameters Provided</span>
-    <span class="k">elif</span> <span class="n">Vgn</span> <span class="o">==</span> <span class="n">Zm</span> <span class="o">==</span> <span class="n">Ip</span> <span class="o">==</span> <span class="n">Ipp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">Ea</span> <span class="o">=</span> <span class="n">Zs</span> <span class="o">*</span> <span class="n">I</span> <span class="o">+</span> <span class="n">Vt</span>
-    <span class="c1"># Invalid Parameter Set</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid Parameter Set&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Ea</span>
+    <span class="c1"># Single-mutual model (legacy support)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">Zm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">Ip</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">Zm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">Ip</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid Parameter Set&quot;</span><span class="p">)</span>
+        <span class="n">Ea</span> <span class="o">=</span> <span class="n">Zs</span> <span class="o">*</span> <span class="n">I</span> <span class="o">+</span> <span class="n">Zm</span> <span class="o">*</span> <span class="n">Ip</span> <span class="o">+</span> <span class="n">Vt</span> <span class="o">+</span> <span class="n">Vgn</span>
+        <span class="k">return</span> <span class="n">Ea</span>
+    <span class="c1"># No mutual model</span>
+    <span class="n">Ea</span> <span class="o">=</span> <span class="n">Zs</span> <span class="o">*</span> <span class="n">I</span> <span class="o">+</span> <span class="n">Vt</span> <span class="o">+</span> <span class="n">Vgn</span>
     <span class="k">return</span> <span class="n">Ea</span></div>
 
 
@@ -2316,20 +2327,32 @@
 <span class="sd">    B:          list of float</span>
 <span class="sd">                The imaginary components from the FFT.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Calculate Terms</span>
-    <span class="n">FR</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
-    <span class="n">NN</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">//</span> <span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="n">minfreq</span><span class="p">)</span>
+    <span class="c1"># Validate Inputs</span>
+    <span class="k">if</span> <span class="n">dt</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;dt must be positive.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;data must contain at least two samples.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Fundamental frequency represented by full record length</span>
+    <span class="n">Trec</span> <span class="o">=</span> <span class="n">dt</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">f0</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">Trec</span>
+
+    <span class="c1"># Determine number of samples needed to represent minfreq (one period)</span>
+    <span class="n">NN</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="n">minfreq</span><span class="p">)))</span>
+
     <span class="c1"># Test for Invalid System</span>
-    <span class="k">if</span> <span class="n">FR</span> <span class="o">&gt;</span> <span class="n">minfreq</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">f0</span> <span class="o">&gt;</span> <span class="n">minfreq</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s2">&quot;Too few data samples to evaluate FFT at specified minimum &quot;</span>
             <span class="s2">&quot;frequency.&quot;</span>
         <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">FR</span> <span class="o">==</span> <span class="n">minfreq</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">f0</span> <span class="o">==</span> <span class="n">minfreq</span><span class="p">:</span>
         <span class="c1"># Evaluate FFT</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Slice data array to appropriate fundamental frequency</span>
+        <span class="k">if</span> <span class="n">NN</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid minfreq/dt combination.&quot;</span><span class="p">)</span>
         <span class="n">cut_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="nb">int</span><span class="p">(</span><span class="n">NN</span><span class="p">)]</span>
         <span class="c1"># Evaluate FFT</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">cut_data</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">cut_data</span><span class="p">)</span>
@@ -3873,19 +3896,27 @@
         <span class="p">}</span>
 
     <span class="k">if</span> <span class="n">t_high</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">t_low</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">C</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
-        <span class="n">x2</span> <span class="o">=</span> <span class="n">t_low</span> <span class="o">/</span> <span class="n">C</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">x1</span> <span class="o">=</span> <span class="n">t_high</span> <span class="o">/</span> <span class="n">C</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">r2</span> <span class="o">=</span> <span class="n">t_low</span> <span class="o">/</span> <span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">C</span><span class="p">)</span>
+        <span class="n">r1</span> <span class="o">=</span> <span class="p">(</span><span class="n">t_high</span> <span class="o">/</span> <span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">C</span><span class="p">))</span> <span class="o">-</span> <span class="n">r2</span>
         <span class="n">T</span> <span class="o">=</span> <span class="n">t_high</span> <span class="o">+</span> <span class="n">t_low</span>
-        <span class="n">freq</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">T</span><span class="p">)</span>
-        <span class="n">duty_cycle</span> <span class="o">=</span> <span class="n">t_high</span> <span class="o">/</span> <span class="p">(</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">freq</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">T</span>
+        <span class="n">duty_cycle</span> <span class="o">=</span> <span class="n">t_high</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> <span class="n">T</span>
 
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;time_period&#39;</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>
             <span class="s1">&#39;frequency&#39;</span><span class="p">:</span> <span class="n">freq</span><span class="p">,</span>
             <span class="s1">&#39;duty_cycle&#39;</span><span class="p">:</span> <span class="n">duty_cycle</span><span class="p">,</span>
-            <span class="s1">&#39;R1&#39;</span><span class="p">:</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x2</span><span class="p">,</span>
-            <span class="s1">&#39;R2&#39;</span><span class="p">:</span> <span class="n">x2</span>
+            <span class="s1">&#39;R1&#39;</span><span class="p">:</span> <span class="n">r1</span><span class="p">,</span>
+            <span class="s1">&#39;R2&#39;</span><span class="p">:</span> <span class="n">r2</span>
+        <span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">freq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">C</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">freq</span>
+        <span class="n">r_sum</span> <span class="o">=</span> <span class="n">T</span> <span class="o">/</span> <span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">C</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;time_period&#39;</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>
+            <span class="s1">&#39;frequency&#39;</span><span class="p">:</span> <span class="n">freq</span><span class="p">,</span>
+            <span class="s1">&#39;R1_plus_2R2&#39;</span><span class="p">:</span> <span class="n">r_sum</span>
         <span class="p">}</span>
     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Not enough parqmeters are passed&quot;</span><span class="p">)</span></div>
 
@@ -3924,7 +3955,14 @@
 <span class="sd">            &quot;t_low&quot;: ON time of IC 555</span>
 <span class="sd">            &quot;t_high&quot;: OFF time of IC 555</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">T</span> <span class="o">=</span> <span class="n">t_high</span> <span class="o">+</span> <span class="n">t_low</span>
+    <span class="k">if</span> <span class="n">t_high</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">t_high</span>
+    <span class="k">elif</span> <span class="n">t_low</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">t_low</span>
+    <span class="k">elif</span> <span class="n">freq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">freq</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">R</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">C</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">T</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -3941,12 +3979,13 @@
         <span class="k">return</span> <span class="n">T</span> <span class="o">/</span> <span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">R</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">T</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">R</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">T</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">R</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">C</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;To find Time delay , Resistance and Capacitance should be &quot;</span>
                 <span class="s2">&quot;provided&quot;</span>
             <span class="p">)</span>
-        <span class="k">return</span> <span class="n">R</span> <span class="o">*</span> <span class="n">C</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">R</span> <span class="o">*</span> <span class="n">C</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">T</span></div>
 
 
 
@@ -4113,7 +4152,7 @@
 
 <span class="sd">    .. math:: R1 = \frac{1.25*R2}{V_{out}-1.25}</span>
 
-<span class="sd">    .. math:: R2 = \frac{R1*V_{out}}{1.25 - R1}</span>
+<span class="sd">    .. math:: R2 = R1 * (\frac{V_{out}}{1.25} - 1)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>

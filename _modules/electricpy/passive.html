@@ -17,7 +17,7 @@
     
     
       
-        <title>electricpy.passive - electricpy 0.4.0 documentation</title>
+        <title>electricpy.passive - electricpy 0.5.0 documentation</title>
       
     
     
@@ -76,7 +76,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../index.html" title="electricpy 0.4.0 documentation" class="md-header__button md-logo" aria-label="electricpy 0.4.0 documentation" data-md-component="logo">
+    <a href="../../index.html" title="electricpy 0.5.0 documentation" class="md-header__button md-logo" aria-label="electricpy 0.5.0 documentation" data-md-component="logo">
       <img src="../../_static/ElectricpyLogo.svg" alt="logo">
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -87,7 +87,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            electricpy 0.4.0 documentation
+            electricpy 0.5.0 documentation
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -208,10 +208,10 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../index.html" title="electricpy 0.4.0 documentation" class="md-nav__button md-logo" aria-label="electricpy 0.4.0 documentation" data-md-component="logo">
+    <a href="../../index.html" title="electricpy 0.5.0 documentation" class="md-nav__button md-logo" aria-label="electricpy 0.5.0 documentation" data-md-component="logo">
       <img src="../../_static/ElectricpyLogo.svg" alt="logo">
     </a>
-    electricpy 0.4.0 documentation
+    electricpy 0.5.0 documentation
   </label>
   
     <div class="md-nav__source">
@@ -516,9 +516,13 @@
 <span class="sd">                Final voltage that both capacitors settle to.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Time must be greater than zero.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Time must be greater than or equal to zero.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">Cs</span> <span class="o">+</span> <span class="n">Cd</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sum of Source and Destination Capacitance must be non-zero.&quot;</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">tau</span> <span class="o">=</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">Cs</span> <span class="o">*</span> <span class="n">Cd</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Cs</span> <span class="o">+</span> <span class="n">Cd</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tau</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid parameters: resulting time constant is zero.&quot;</span><span class="p">)</span>
         <span class="n">rvolt</span> <span class="o">=</span> <span class="n">Vs</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">t</span> <span class="o">/</span> <span class="n">tau</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ZeroDivisionError</span><span class="p">(</span><span class="s2">&quot;Sum of Source and Destination Capacitance must be non-zero.&quot;</span><span class="p">)</span>
@@ -544,7 +548,11 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    C1:         float</span>
-<span class="sd">                The capacitance of the</span>
+<span class="sd">                Energized capacitor bank capacitance.</span>
+<span class="sd">    C2:         float</span>
+<span class="sd">                De-energized capacitor bank capacitance.</span>
+<span class="sd">    Lm:         float</span>
+<span class="sd">                Equivalent inductance in the transient path.</span>
 <span class="sd">    VLN:        float, exclusive</span>
 <span class="sd">                The line-to-neutral voltage experienced by</span>
 <span class="sd">                any one of the (three) capacitors in the</span>
@@ -560,6 +568,17 @@
 <span class="sd">    ifreq:      float</span>
 <span class="sd">                Transient current frequency</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">VLN</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">VLL</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Either VLN or VLL must be provided.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">VLN</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">VLL</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Provide only one of VLN or VLL, not both.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">VLN</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">VLL</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">VLN</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">C1</span> <span class="o">+</span> <span class="n">C2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;C1 + C2 must be non-zero.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">Lm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Lm must be non-zero.&quot;</span><span class="p">)</span>
+
     <span class="c1"># Evaluate Max Current</span>
     <span class="n">imax</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">VLL</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">C1</span> <span class="o">*</span> <span class="n">C2</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="n">C1</span> <span class="o">+</span> <span class="n">C2</span><span class="p">)</span> <span class="o">*</span> <span class="n">Lm</span><span class="p">))</span>
     <span class="c1"># Evaluate Inrush Current Frequency</span>
@@ -660,7 +679,16 @@
 <span class="sd">    Vt:         float</span>
 <span class="sd">                Voltage of capacitor at time t.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">Vt</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">vo</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">P</span> <span class="o">*</span> <span class="n">t</span> <span class="o">/</span> <span class="n">C</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Time must be greater than or equal to zero.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Capacitance must be non-zero.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">P</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Load power must be non-negative.&quot;</span><span class="p">)</span>
+    <span class="n">rad</span> <span class="o">=</span> <span class="n">vo</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">P</span> <span class="o">*</span> <span class="n">t</span> <span class="o">/</span> <span class="n">C</span>
+    <span class="k">if</span> <span class="n">rad</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Requested time exceeds discharge limit for given parameters.&quot;</span><span class="p">)</span>
+    <span class="n">Vt</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">rad</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Vt</span></div>
 
 
@@ -697,21 +725,58 @@
 <span class="sd">    Returns time to discharge from Vinit to Vmin in seconds.</span>
 <span class="sd">    May also return remaining energy in capacitor if Eremain=True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># start at time t=0</span>
+    <span class="k">if</span> <span class="n">dt</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;dt must be greater than zero.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">C</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Capacitance must be non-zero.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">P</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Load power must be non-negative.&quot;</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">RMS</span><span class="p">:</span>
         <span class="n">vo</span> <span class="o">=</span> <span class="n">Vinit</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># convert RMS to peak</span>
+        <span class="n">vmin_cmp</span> <span class="o">=</span> <span class="n">Vmin</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">vo</span> <span class="o">=</span> <span class="n">Vinit</span>
-    <span class="n">vc</span> <span class="o">=</span> <span class="n">loadedvcapdischarge</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">vo</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>  <span class="c1"># set initial cap voltage</span>
-    <span class="k">while</span> <span class="n">vc</span> <span class="o">&gt;=</span> <span class="n">Vmin</span><span class="p">:</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">dt</span>  <span class="c1"># increment the time</span>
-        <span class="n">vcp</span> <span class="o">=</span> <span class="n">vc</span>  <span class="c1"># save previous voltage</span>
-        <span class="n">vc</span> <span class="o">=</span> <span class="n">loadedvcapdischarge</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">vo</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>  <span class="c1"># calc. new voltage</span>
+        <span class="n">vmin_cmp</span> <span class="o">=</span> <span class="n">Vmin</span>
+
+    <span class="k">if</span> <span class="n">P</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">vo</span> <span class="o">&lt;</span> <span class="n">vmin_cmp</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">Eremain</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">capenergy</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">vo</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">if</span> <span class="n">Eremain</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">capenergy</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">vo</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">inf</span>
+
+    <span class="k">if</span> <span class="n">vo</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">vmin_cmp</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Voltages must be non-negative.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vo</span> <span class="o">&lt;</span> <span class="n">vmin_cmp</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">Eremain</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">capenergy</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">vo</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="c1"># Analytic discharge time from: V(t)^2 = vo^2 - 2*P*t/C</span>
+    <span class="n">t_exact</span> <span class="o">=</span> <span class="p">(</span><span class="n">C</span> <span class="o">*</span> <span class="p">(</span><span class="n">vo</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">vmin_cmp</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">P</span><span class="p">)</span>
+
+    <span class="c1"># Keep original behavior: return time snapped to step boundary (previous step)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">t_exact</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">Eremain</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">capenergy</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">vo</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">inf</span>
+
+    <span class="n">t_step</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">t_exact</span> <span class="o">/</span> <span class="n">dt</span><span class="p">)</span> <span class="o">*</span> <span class="n">dt</span>
+    <span class="k">if</span> <span class="n">t_step</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">t_step</span> <span class="o">=</span> <span class="mf">0.0</span>
+
     <span class="k">if</span> <span class="n">Eremain</span><span class="p">:</span>
-        <span class="n">E</span> <span class="o">=</span> <span class="n">capenergy</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">vcp</span><span class="p">)</span>  <span class="c1"># calc. energy</span>
-        <span class="k">return</span> <span class="n">t</span> <span class="o">-</span> <span class="n">dt</span><span class="p">,</span> <span class="n">E</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">capenergy</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">vmin_cmp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">t_step</span><span class="p">,</span> <span class="n">E</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">t</span> <span class="o">-</span> <span class="n">dt</span></div>
+        <span class="k">return</span> <span class="n">t_step</span></div>
 
 
 
@@ -806,6 +871,12 @@
 <span class="sd">    Il:         float</span>
 <span class="sd">                Current through inductor at time t.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Time must be greater than or equal to zero.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">L</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Inductance must be non-zero.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">R</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Resistance must be non-zero.&quot;</span><span class="p">)</span>
     <span class="n">Vl</span> <span class="o">=</span> <span class="n">Vs</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">R</span> <span class="o">*</span> <span class="n">t</span> <span class="o">/</span> <span class="n">L</span><span class="p">)</span>
     <span class="n">Il</span> <span class="o">=</span> <span class="n">Vs</span> <span class="o">/</span> <span class="n">R</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">R</span> <span class="o">*</span> <span class="n">t</span> <span class="o">/</span> <span class="n">L</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">Vl</span><span class="p">,</span> <span class="n">Il</span></div>
@@ -844,6 +915,10 @@
 <span class="sd">    Il:         float</span>
 <span class="sd">                Current through inductor at time t.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Time must be greater than or equal to zero.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">L</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Inductance must be non-zero.&quot;</span><span class="p">)</span>
     <span class="n">Il</span> <span class="o">=</span> <span class="n">Io</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">R</span> <span class="o">*</span> <span class="n">t</span> <span class="o">/</span> <span class="n">L</span><span class="p">)</span>
     <span class="n">Vl</span> <span class="o">=</span> <span class="n">Io</span> <span class="o">*</span> <span class="n">R</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">R</span> <span class="o">*</span> <span class="n">t</span> <span class="o">/</span> <span class="n">L</span><span class="p">))</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">Vl</span><span class="p">,</span> <span class="n">Il</span><span class="p">)</span></div>
@@ -876,6 +951,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">k1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1000</span> <span class="o">*</span> <span class="n">d</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">n</span> <span class="o">**</span> <span class="mi">2</span>
     <span class="n">k2</span> <span class="o">=</span> <span class="p">(</span><span class="mi">457418</span> <span class="o">*</span> <span class="n">d</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1016127</span> <span class="o">*</span> <span class="n">coil_l</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">k2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid parameters: denominator evaluates to zero.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">k1</span> <span class="o">/</span> <span class="n">k2</span></div>
 
 
@@ -891,7 +968,7 @@
 <span class="sd">    and the other one is connected from the output to ground. You can also use</span>
 <span class="sd">    other components like resistors and inductors.</span>
 
-<span class="sd">    .. math:: V_{out} = \frac{V_{in}*L1}{L1+L2}</span>
+<span class="sd">    .. math:: V_{out} = \frac{V_{in}*L2}{L1+L2}</span>
 
 <span class="sd">    .. image:: /static/inductive-voltage-divider-circuit.png</span>
 
@@ -928,12 +1005,20 @@
 <span class="sd">            Value of the inductor below the output voltage</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">Vin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">L1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">L2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">Vout</span> <span class="o">=</span> <span class="p">(</span><span class="n">Vin</span> <span class="o">*</span> <span class="n">L1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">L1</span> <span class="o">+</span> <span class="n">L2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">L1</span> <span class="o">+</span> <span class="n">L2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ERROR: L1 + L2 must be non-zero.&quot;</span><span class="p">)</span>
+        <span class="n">Vout</span> <span class="o">=</span> <span class="p">(</span><span class="n">Vin</span> <span class="o">*</span> <span class="n">L2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">L1</span> <span class="o">+</span> <span class="n">L2</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">Vout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">L1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">L2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">Vin</span> <span class="o">=</span> <span class="p">(</span><span class="n">Vout</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">L1</span> <span class="o">+</span> <span class="n">L2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">L1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">L2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ERROR: L2 must be non-zero.&quot;</span><span class="p">)</span>
+        <span class="n">Vin</span> <span class="o">=</span> <span class="p">(</span><span class="n">Vout</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">L1</span> <span class="o">+</span> <span class="n">L2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">L2</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">Vin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">Vout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">L2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">Vout</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ERROR: Vout must be non-zero.&quot;</span><span class="p">)</span>
         <span class="n">L1</span> <span class="o">=</span> <span class="n">L2</span> <span class="o">*</span> <span class="p">(</span><span class="n">Vin</span> <span class="o">-</span> <span class="n">Vout</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Vout</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">Vin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">Vout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">L1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">Vin</span> <span class="o">-</span> <span class="n">Vout</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ERROR: Vin - Vout must be non-zero.&quot;</span><span class="p">)</span>
         <span class="n">L2</span> <span class="o">=</span> <span class="n">L1</span> <span class="o">*</span> <span class="n">Vout</span> <span class="o">/</span> <span class="p">(</span><span class="n">Vin</span> <span class="o">-</span> <span class="n">Vout</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ERROR: Invalid Parameters or too few&quot;</span> <span class="o">+</span>

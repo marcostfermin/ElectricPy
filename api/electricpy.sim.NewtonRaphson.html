@@ -21,7 +21,7 @@
     
     
       
-        <title>electricpy.sim.NewtonRaphson - electricpy 0.4.0 documentation</title>
+        <title>electricpy.sim.NewtonRaphson - electricpy 0.5.0 documentation</title>
       
     
     
@@ -85,7 +85,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../index.html" title="electricpy 0.4.0 documentation" class="md-header__button md-logo" aria-label="electricpy 0.4.0 documentation" data-md-component="logo">
+    <a href="../index.html" title="electricpy 0.5.0 documentation" class="md-header__button md-logo" aria-label="electricpy 0.5.0 documentation" data-md-component="logo">
       <img src="../_static/ElectricpyLogo.svg" alt="logo">
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -96,7 +96,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            electricpy 0.4.0 documentation
+            electricpy 0.5.0 documentation
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -217,10 +217,10 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../index.html" title="electricpy 0.4.0 documentation" class="md-nav__button md-logo" aria-label="electricpy 0.4.0 documentation" data-md-component="logo">
+    <a href="../index.html" title="electricpy 0.5.0 documentation" class="md-nav__button md-logo" aria-label="electricpy 0.5.0 documentation" data-md-component="logo">
       <img src="../_static/ElectricpyLogo.svg" alt="logo">
     </a>
-    electricpy 0.4.0 documentation
+    electricpy 0.5.0 documentation
   </label>
   
     <div class="md-nav__source">
@@ -1219,6 +1219,36 @@ being surpassed.</p></li>
 </p>
 </dd>
 </dl>
+<p class="example rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">electricpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">sim</span> <span class="c1"># Import Simulation Submodule</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">F</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">matr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">10</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="mi">2</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="mi">10</span><span class="o">+</span><span class="mi">1</span><span class="p">]])</span>
+<span class="gp">... </span>    <span class="k">return</span><span class="p">(</span><span class="n">matr</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">J</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">matr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">10</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">10</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="mi">10</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="o">-</span><span class="mi">10</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="mi">20</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]]])</span>
+<span class="gp">... </span>    <span class="k">return</span><span class="p">(</span><span class="n">matr</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Now compute Newton-Raphson</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span><span class="p">,</span> <span class="nb">iter</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">NewtonRaphson</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">X0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="go">[-0.236,0.8554]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">iter</span><span class="p">)</span> <span class="c1"># Iteration Counter</span>
+<span class="go">4</span>
+</code></pre></div>
+</div>
+<div class="seealso admonition">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="electricpy.sim.nr_pq.html#electricpy.sim.nr_pq" title="electricpy.sim.nr_pq (Python function) — Newton Raphson Real/Reactive Power Function Generator."><code class="xref py py-obj docutils literal notranslate"><span class="pre">nr_pq</span></code></a></dt><dd><p>Newton-Raphson System Generator</p>
+</dd>
+<dt><a class="reference internal" href="electricpy.sim.mbuspowerflow.html#electricpy.sim.mbuspowerflow" title="electricpy.sim.mbuspowerflow (Python function) — Multi-Bus Power Flow Calculator."><code class="xref py py-obj docutils literal notranslate"><span class="pre">mbuspowerflow</span></code></a></dt><dd><p>Multi-Bus Power Flow Calculator</p>
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 

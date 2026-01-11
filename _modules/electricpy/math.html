@@ -17,7 +17,7 @@
     
     
       
-        <title>electricpy.math - electricpy 0.4.0 documentation</title>
+        <title>electricpy.math - electricpy 0.5.0 documentation</title>
       
     
     
@@ -76,7 +76,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../index.html" title="electricpy 0.4.0 documentation" class="md-header__button md-logo" aria-label="electricpy 0.4.0 documentation" data-md-component="logo">
+    <a href="../../index.html" title="electricpy 0.5.0 documentation" class="md-header__button md-logo" aria-label="electricpy 0.5.0 documentation" data-md-component="logo">
       <img src="../../_static/ElectricpyLogo.svg" alt="logo">
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -87,7 +87,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            electricpy 0.4.0 documentation
+            electricpy 0.5.0 documentation
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -208,10 +208,10 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../index.html" title="electricpy 0.4.0 documentation" class="md-nav__button md-logo" aria-label="electricpy 0.4.0 documentation" data-md-component="logo">
+    <a href="../../index.html" title="electricpy 0.5.0 documentation" class="md-nav__button md-logo" aria-label="electricpy 0.5.0 documentation" data-md-component="logo">
       <img src="../../_static/ElectricpyLogo.svg" alt="logo">
     </a>
-    electricpy 0.4.0 documentation
+    electricpy 0.5.0 documentation
   </label>
   
     <div class="md-nav__source">
@@ -418,6 +418,29 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.integrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">quad</span> <span class="k">as</span> <span class="n">integrate</span>
 
 
+<span class="c1"># Internal downsample helper (used by rfft)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_dnsample</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Downsample an array by integer factor n using slicing.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    arr:    arraylike</span>
+<span class="sd">            Input array</span>
+<span class="sd">    n:      int</span>
+<span class="sd">            Downsample factor (&gt;=1)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    out:    numpy.ndarray</span>
+<span class="sd">            Downsampled array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">arr</span><span class="p">)[::</span><span class="n">n</span><span class="p">]</span>
+
+
 <span class="c1"># Define convolution function</span>
 <div class="viewcode-block" id="convolve">
 <a class="viewcode-back" href="../../api/electricpy.math.convolve.html#electricpy.math.convolve">[docs]</a>
@@ -438,6 +461,10 @@
 <span class="sd">    c:          The convolved set of the individual terms.</span>
 <span class="sd">                i.e. numpy.ndarray([ x1, x2, x3, ..., xn ])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">tuple</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;convolve() requires a tuple of at least two terms.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">tuple</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;convolve() requires a tuple of at least two terms.&quot;</span><span class="p">)</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">_sig</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="nb">tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">tuple</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">):</span>
         <span class="c1"># Iterate starting with second element and continuing</span>
@@ -497,6 +524,8 @@
 <span class="sd">    -------</span>
 <span class="sd">    RMS:    The RMS value of the function (f) over the interval ( 0, T )</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">T</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">T</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;funcrms() requires a positive, non-zero period T.&quot;</span><span class="p">)</span>
     <span class="n">fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
     <span class="n">integral</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">T</span> <span class="o">*</span> <span class="n">integral</span><span class="p">)</span></div>
@@ -526,6 +555,8 @@
 <span class="sd">    -------</span>
 <span class="sd">    Computed gaussian (numpy.ndarray) of the input x</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">sigma</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;gaussian() requires sigma != 0.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">sigma</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span> <span class="o">*</span>
             <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)))</span></div>
 
@@ -557,13 +588,16 @@
 <span class="sd">            Computed distribution of the gausian function at the</span>
 <span class="sd">            points specified by (array) x</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">sigma</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;gausdist() requires sigma != 0.&quot;</span><span class="p">)</span>
+
     <span class="c1"># Define Integrand</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">integrand</span><span class="p">(</span><span class="n">sq</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">sq</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">lx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># Find length of Input</span>
-    <span class="k">except</span><span class="p">:</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
         <span class="n">lx</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Length 1</span>
         <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>  <span class="c1"># Pack into list</span>
     <span class="n">F</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">lx</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
@@ -571,7 +605,7 @@
         <span class="n">x_tmp</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="c1"># Evaluate X (altered by mu and sigma)</span>
         <span class="n">X</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_tmp</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span> <span class="o">/</span> <span class="n">sigma</span>
-        <span class="n">integral</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">NINF</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>  <span class="c1"># Integrate</span>
+        <span class="n">integral</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>  <span class="c1"># Integrate</span>
         <span class="n">result</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">integral</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Evaluate Result</span>
         <span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
     <span class="c1"># Return only the 0-th value if there&#39;s only 1 value available</span>
@@ -614,7 +648,7 @@
     <span class="n">sumx</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">lx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># Find length of Input</span>
-    <span class="k">except</span><span class="p">:</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
         <span class="n">lx</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Length 1</span>
         <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>  <span class="c1"># Pack into list</span>
     <span class="c1"># Recursively Find Probability Density</span>
@@ -624,10 +658,15 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sumx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">sumx</span> <span class="o">=</span> <span class="n">sumx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">scale</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">scale</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">mx</span> <span class="o">=</span> <span class="n">sumx</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-            <span class="n">sumx</span> <span class="o">/=</span> <span class="n">mx</span>
-        <span class="k">elif</span> <span class="n">scale</span> <span class="o">!=</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">mx</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">sumx</span> <span class="o">/=</span> <span class="n">mx</span>
+        <span class="k">elif</span> <span class="n">scale</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">scale</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;probdensity() scale must be True, False, or a non-zero number.&quot;</span><span class="p">)</span>
             <span class="n">sumx</span> <span class="o">/=</span> <span class="n">scale</span>
     <span class="k">return</span> <span class="n">sumx</span></div>
 
@@ -663,24 +702,35 @@
 <span class="sd">    -------</span>
 <span class="sd">    FFT Array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">dt</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">dt</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;rfft() requires a positive, non-zero dt.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">arr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;rfft() requires a valid input array.&quot;</span><span class="p">)</span>
+    <span class="n">arr</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+
     <span class="c1"># Calculate with Absolute Values</span>
     <span class="k">if</span> <span class="n">absolute</span><span class="p">:</span>
         <span class="n">fourier</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">fourier</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">resample</span><span class="p">:</span>
+
+    <span class="k">if</span> <span class="n">resample</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
         <span class="c1"># Evaluate the Downsampling Ratio</span>
         <span class="n">dn</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">dn</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">dn</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="c1"># Downsample to remove unnecessary points</span>
-        <span class="n">fixedfft</span> <span class="o">=</span> <span class="nb">filter</span><span class="o">.</span><span class="n">dnsample</span><span class="p">(</span><span class="n">fourier</span><span class="p">,</span> <span class="n">dn</span><span class="p">)</span>
+        <span class="n">fixedfft</span> <span class="o">=</span> <span class="n">_dnsample</span><span class="p">(</span><span class="n">fourier</span><span class="p">,</span> <span class="n">dn</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">fixedfft</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="ow">not</span> <span class="n">resample</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">resample</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">fourier</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Condition Resample Value</span>
         <span class="n">resample</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resample</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">resample</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">resample</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="c1"># Downsample to remove unnecessary points</span>
-        <span class="n">fixedfft</span> <span class="o">=</span> <span class="nb">filter</span><span class="o">.</span><span class="n">dnsample</span><span class="p">(</span><span class="n">fourier</span><span class="p">,</span> <span class="n">resample</span><span class="p">)</span>
+        <span class="n">fixedfft</span> <span class="o">=</span> <span class="n">_dnsample</span><span class="p">(</span><span class="n">fourier</span><span class="p">,</span> <span class="n">resample</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">fixedfft</span></div>
 
 </code></pre></div>
