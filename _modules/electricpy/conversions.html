@@ -503,8 +503,7 @@
 <span class="sd">    BTU:        float</span>
 <span class="sd">                The number of British Thermal Units</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># constants.KWH_PER_BTU is kWh per BTU, so invert to get BTU per kWh</span>
-    <span class="k">return</span> <span class="n">kWh</span> <span class="o">/</span> <span class="n">KWH_PER_BTU</span></div>
+    <span class="k">return</span> <span class="n">kWh</span> <span class="o">*</span> <span class="n">KWH_PER_BTU</span></div>
 
 
 
@@ -533,7 +532,7 @@
 <span class="sd">    kWh:        float</span>
 <span class="sd">                The number of kilo-Watt-hours</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">BTU</span> <span class="o">*</span> <span class="n">KWH_PER_BTU</span></div>
+    <span class="k">return</span> <span class="n">BTU</span> <span class="o">/</span> <span class="n">KWH_PER_BTU</span></div>
 
 
 
@@ -625,7 +624,7 @@
 <span class="sd">    Converts phase-based values to sequence</span>
 <span class="sd">    components.</span>
 
-<span class="sd">    .. math:: M_{\text{012}}=A_{\text{abc}}\cdot M_{\text{ABC}}</span>
+<span class="sd">    .. math:: M_{\text{012}}=A_{\text{012}}\cdot M_{\text{ABC}}</span>
 
 <span class="sd">    Same as phs_to_seq.</span>
 
@@ -645,7 +644,7 @@
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    seq_to_abc: Sequence to Phase Conversion</span>
-<span class="sd">    sequencez:  Phase Impedance to Sequence Converter</span>
+<span class="sd">    sequence:  Phase Impedance to Sequence Converter</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -664,9 +663,9 @@
     <span class="k">if</span> <span class="n">reference</span> <span class="o">==</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span>
         <span class="n">M</span> <span class="o">=</span> <span class="n">Aabc</span>
     <span class="k">elif</span> <span class="n">reference</span> <span class="o">==</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span>
-        <span class="n">M</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">Aabc</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">Aabc</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">reference</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
-        <span class="n">M</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">Aabc</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">Aabc</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid Phase Reference.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">M</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Mabc</span><span class="p">)</span></div>
@@ -687,7 +686,7 @@
 <span class="sd">    Converts sequence-based values to phase</span>
 <span class="sd">    components.</span>
 
-<span class="sd">    .. math:: M_{\text{ABC}}=A_{\text{012}}\cdot M_{\text{012}}</span>
+<span class="sd">    .. math:: M_{\text{ABC}}=A_{\text{012}}^{-1}\cdot M_{\text{012}}</span>
 
 <span class="sd">    Same as seq_to_phs.</span>
 
@@ -707,7 +706,21 @@
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    abc_to_seq: Phase to Sequence Conversion</span>
-<span class="sd">    sequencez:  Phase Impedance to Sequence Converter</span>
+<span class="sd">    sequence:  Phase Impedance to Sequence Converter</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import electricpy as ep</span>
+<span class="sd">    &gt;&gt;&gt; import electricpy.conversions as conv</span>
+<span class="sd">    &gt;&gt;&gt; abc_matrix = [</span>
+<span class="sd">    ...     ep.phasor(167, 0),</span>
+<span class="sd">    ...     ep.phasor(167, -120),</span>
+<span class="sd">    ...     ep.phasor(167, -240),</span>
+<span class="sd">    ... ]</span>
+<span class="sd">    &gt;&gt;&gt; seq_quantities = conv.abc_to_seq(abc_matrix)</span>
+<span class="sd">    &gt;&gt;&gt; # Will return a list approximately equal to: [0+0j, 167+0j, 0+0j]</span>
+<span class="sd">    &gt;&gt;&gt; phs_quantities = conv.seq_to_abc(seq_quantities)</span>
+<span class="sd">    &gt;&gt;&gt; # Returned Phase Quantities will Approximately Equal the Original Values</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Compute Dot Product</span>
     <span class="n">M</span> <span class="o">=</span> <span class="n">A012</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">M012</span><span class="p">)</span>
@@ -744,17 +757,17 @@
 
 <span class="sd">    When resolve is False:</span>
 
-<span class="sd">    .. math:: Z_{\text{012}} = A_{\text{abc}}\cdot Z_{\text{ABC}}\cdot A_{\text{012}}</span>
+<span class="sd">    .. math:: Z_{\text{012-M}}=A_{\text{012}}^{-1}Z_{\text{ABC}}A_{\text{012}}</span>
 
 <span class="sd">    When resolve is True:</span>
 
-<span class="sd">    .. math:: Z_{\text{012}} = A_{\text{012}}\cdot Z_{\text{ABC}}\cdot A_{\text{abc}}</span>
+<span class="sd">    .. math:: Z_{\text{012}}=A_{\text{012}}Z_{\text{ABC}}A_{\text{012}}^{-1}</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    Zabc:       numpy.array of complex</span>
 <span class="sd">                2-D (3x3) matrix of complex values</span>
-<span class="sd">                representing the phase impedance</span>
+<span class="sd">                representing the pharo impedance</span>
 <span class="sd">                in the ABC-domain.</span>
 <span class="sd">    reference:  {&#39;A&#39;, &#39;B&#39;, &#39;C&#39;}</span>
 <span class="sd">                Single character denoting the reference,</span>
@@ -766,7 +779,6 @@
 <span class="sd">    diag:       bool, optional</span>
 <span class="sd">                Control argument to force the function to</span>
 <span class="sd">                reduce the matrix to its diagonal terms.</span>
-<span class="sd">                default=False</span>
 <span class="sd">    rounds:      int, optional</span>
 <span class="sd">                Integer denoting number of decimal places</span>
 <span class="sd">                resulting matrix should be rounded to.</span>
@@ -789,27 +801,20 @@
     <span class="n">roll_rate</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
     <span class="c1"># Test Validity</span>
     <span class="k">if</span> <span class="n">reference</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">roll_rate</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid Phase Reference&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalad Phase Reference&quot;</span><span class="p">)</span>
     <span class="c1"># Determine Roll Factor</span>
     <span class="n">roll</span> <span class="o">=</span> <span class="n">roll_rate</span><span class="p">[</span><span class="n">reference</span><span class="p">]</span>
-
-    <span class="n">Zabc</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">Zabc</span><span class="p">)</span>
-    <span class="c1"># Adjust transform matrices for reference selection to match abc_to_seq/seq_to_abc behavior.</span>
-    <span class="k">if</span> <span class="n">roll</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">Aabc_ref</span> <span class="o">=</span> <span class="n">Aabc</span>
-        <span class="n">A012_ref</span> <span class="o">=</span> <span class="n">A012</span>
+    <span class="c1"># Evaluate Matrices</span>
+    <span class="n">M012</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">A012</span><span class="p">,</span> <span class="n">roll</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">min_v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">M012</span><span class="p">)</span>
+    <span class="c1"># Compute Sequence Impedance</span>
+    <span class="k">if</span> <span class="n">resolve</span><span class="p">:</span>
+        <span class="n">Z012</span> <span class="o">=</span> <span class="n">M012</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Zabc</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">min_v</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">Aabc_ref</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">Aabc</span><span class="p">,</span> <span class="n">roll</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">A012_ref</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">A012</span><span class="p">,</span> <span class="n">roll</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-    <span class="c1"># Standard: Z012 = Aabc * Zabc * A012</span>
-    <span class="n">Z012</span> <span class="o">=</span> <span class="n">Aabc_ref</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Zabc</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A012_ref</span><span class="p">))</span>
-
-    <span class="c1"># If resolve requested, return diagonal terms [Z0, Z1, Z2]</span>
-    <span class="k">if</span> <span class="n">diag</span> <span class="ow">or</span> <span class="n">resolve</span><span class="p">:</span>
-        <span class="n">Zdiag</span> <span class="o">=</span> <span class="p">[</span><span class="n">Z012</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">Z012</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">Z012</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]]</span>
-        <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">Zdiag</span><span class="p">,</span> <span class="n">rounds</span><span class="p">)</span>
-
+        <span class="n">Z012</span> <span class="o">=</span> <span class="n">min_v</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Zabc</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">M012</span><span class="p">))</span>
+    <span class="c1"># Reduce to Diagonal Terms if Needed</span>
+    <span class="k">if</span> <span class="n">diag</span><span class="p">:</span>
+        <span class="n">Z012</span> <span class="o">=</span> <span class="p">[</span><span class="n">Z012</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">Z012</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">Z012</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]]</span>
     <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">Z012</span><span class="p">,</span> <span class="n">rounds</span><span class="p">)</span></div>
 
 
@@ -1130,15 +1135,15 @@
 
 
 
-<span class="c1"># Define Decibel to Voltage</span>
+<span class="c1"># Define Decibel to reference Voltage</span>
 <div class="viewcode-block" id="db_to_voltage">
 <a class="viewcode-back" href="../../api/electricpy.conversions.db_to_voltage.html#electricpy.conversions.db_to_voltage">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">db_to_voltage</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">ref_voltage</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Decibel to Voltage.</span>
+<span class="sd">    Decibel to Reference Voltage.</span>
 
-<span class="sd">    Given decibel and reference voltage, this function will evaluate</span>
-<span class="sd">    the voltage.</span>
+<span class="sd">    Given decibel and voltage, this function will evaluate</span>
+<span class="sd">    the power of reference voltage.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1152,7 +1157,7 @@
 <span class="sd">    voltage:         float</span>
 <span class="sd">                     Voltage</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ref_voltage</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="p">(</span><span class="n">db</span> <span class="o">/</span> <span class="mi">20</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">ref_voltage</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">db</span> <span class="o">/</span> <span class="mi">20</span><span class="p">))</span></div>
 
 
 <span class="c1"># END</span>
